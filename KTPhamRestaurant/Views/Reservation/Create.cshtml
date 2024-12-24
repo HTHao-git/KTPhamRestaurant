@@ -1,0 +1,108 @@
+﻿@model KTPhamRestaurant.Models.Reservation
+
+@{
+    ViewBag.Title = "New Reservation";
+    var reservationDateTime = Model?.ReservationDateTime ?? DateTime.Now.AddHours(1);
+    var formattedDateTime = reservationDateTime.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>New Reservation</h2>
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.Hidden("Status", "Confirmed")
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.CustomerName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contact Number</label>
+                        @Html.TextBoxFor(m => m.ContactNumber, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.ContactNumber, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date & Time</label>
+                        <input type="datetime-local"
+                               id="ReservationDateTime"
+                               name="ReservationDateTime"
+                               class="form-control"
+                               required
+                               value="@formattedDateTime" />
+                        @Html.ValidationMessageFor(m => m.ReservationDateTime, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Table</label>
+                        @Html.DropDownList("TableID", (SelectList)ViewBag.TableID, "Select a Table", new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.TableID, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of Guests</label>
+                        @Html.TextBoxFor(m => m.NumberOfGuests, new { @class = "form-control", type = "number", min = "1", required = "required", value = "1" })
+                        @Html.ValidationMessageFor(m => m.NumberOfGuests, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Special Requests</label>
+                        @Html.TextAreaFor(m => m.SpecialRequests, new { @class = "form-control", rows = "3" })
+                        @Html.ValidationMessageFor(m => m.SpecialRequests, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary">Create Reservation</button>
+            @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-secondary" })
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            // Set minimum datetime to now
+            var now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            var minDateTime = now.toISOString().slice(0, 16);
+            $('#ReservationDateTime').attr('min', minDateTime);
+        });
+    </script>
+}

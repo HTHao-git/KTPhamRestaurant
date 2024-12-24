@@ -1,0 +1,130 @@
+﻿@model IEnumerable<KTPhamRestaurant.Models.MenuItem>
+
+@{
+    ViewBag.Title = "Menu Items";
+    var recommendedItems = Model.Where(m => m.StarRating == 5).ToList();
+    var categorizedItems = Model.GroupBy(m => m.DishType).OrderBy(g => g.Key).ToList();
+}
+
+<style>
+    .menu-section {
+        margin-bottom: 40px;
+    }
+
+    .menu-section-title {
+        color: #FF5722;
+        border-bottom: 2px solid #FF5722;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .recommended-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #FFD700;
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    .trending-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #FF4081;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    .menu-card {
+        height: 100%;
+        transition: transform 0.2s;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+        }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Menu Items</h2>
+    @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+@if (recommendedItems.Any())
+{
+    <div class="menu-section">
+        <h3 class="menu-section-title">⭐ Chef's Recommendations</h3>
+        <div class="row">
+            @foreach (var item in recommendedItems)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card menu-card">
+                        <div class="card-body">
+                            <span class="recommended-badge">Recommended</span>
+                            <h5 class="card-title">@item.DishName</h5>
+                            <p class="card-text">
+                                <strong>Size:</strong> @item.Size<br />
+                                <strong>Price:</strong> $@item.Price.ToString("F2")<br />
+                                <strong>Rating:</strong> @(new string('⭐', item.StarRating ?? 0))<br />
+                                @if (item.TotalSold > 0)
+                                {
+                                    <small class="text-muted">Ordered @item.TotalSold times</small>
+                                }
+                            </p>
+                            <div class="btn-group">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.DishID }, new { @class = "btn btn-sm btn-primary" })
+                                @Html.ActionLink("Details", "Details", new { id = item.DishID }, new { @class = "btn btn-sm btn-info" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@foreach (var category in categorizedItems)
+{
+    <div class="menu-section">
+        <h3 class="menu-section-title">@category.Key</h3>
+        <div class="row">
+            @foreach (var item in category)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card menu-card">
+                        <div class="card-body">
+                            @if (item.TotalSold >= 45) 
+                            {
+                                <span class="trending-badge">Popular</span>
+                            }
+                            <h5 class="card-title">@item.DishName</h5>
+                            <p class="card-text">
+                                <strong>Size:</strong> @item.Size<br />
+                                <strong>Price:</strong> $@item.Price.ToString("F2")<br />
+                                @if (item.StarRating.HasValue)
+                                {
+                                    <strong>Rating:</strong> @(new string('⭐', item.StarRating.Value))<br />
+                                }
+                                @if (item.TotalSold > 0)
+                                {
+                                    <small class="text-muted">Ordered @item.TotalSold times</small>
+                                }
+                            </p>
+                            <div class="btn-group">
+                                @Html.ActionLink("Edit", "Edit", new { id = item.DishID }, new { @class = "btn btn-sm btn-primary" })
+                                @Html.ActionLink("Details", "Details", new { id = item.DishID }, new { @class = "btn btn-sm btn-info" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

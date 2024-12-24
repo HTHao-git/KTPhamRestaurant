@@ -1,0 +1,70 @@
+﻿@model KTPhamRestaurant.Models.KitchenDashboardViewModel
+
+@{
+    ViewBag.Title = "Kitchen Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Kitchen Dashboard</h2>
+    @Html.ActionLink("Back to Orders", "Index", null, new { @class = "btn btn-primary" })
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Pending Orders</div>
+            <div class="card-body">
+                <h2 class="card-title">@Model.PendingOrders</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">In Progress</div>
+            <div class="card-body">
+                <h2 class="card-title">@Model.InProgressOrders</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Completed Today</div>
+            <div class="card-body">
+                <h2 class="card-title">@Model.CompletedOrders</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Most Popular Items</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Orders</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PopularItems)
+                            {
+                                <tr>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.OrderCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

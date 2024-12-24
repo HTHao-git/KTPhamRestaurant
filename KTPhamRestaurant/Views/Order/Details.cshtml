@@ -1,0 +1,111 @@
+﻿@model KTPhamRestaurant.Models.Order
+
+@{
+    ViewBag.Title = "Order Details";
+    decimal total = Model.OrderDetails.Sum(od => od.MenuItem.Price * od.Quantity);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Order Details - @Model.OrderID</h2>
+    <div>
+        @if (!Model.Payments.Any(p => p.PaymentStatus == "Paid"))
+        {
+            @Html.ActionLink("Edit Order", "Edit", new { id = Model.OrderID }, new { @class = "btn btn-primary" })
+        }
+        @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-default" })
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Order Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Date:</dt>
+                    <dd class="col-sm-8">@(Model.OrderDate.HasValue ? Model.OrderDate.Value.ToString("MM/dd/yyyy HH:mm") : "N/A")</dd>
+
+                    <dt class="col-sm-4">Table:</dt>
+                    <dd class="col-sm-8">@Model.Table.TableNumber</dd>
+
+                    <dt class="col-sm-4">Server:</dt>
+                    <dd class="col-sm-8">@Model.Employee.EmployeeName</dd>
+
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">@Model.Status</dd>
+
+                    <dt class="col-sm-4">Payment:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Payments.Any())
+                        {
+                            var payment = Model.Payments.FirstOrDefault();
+                            <span class="@(payment.PaymentStatus == "Paid" ? "text-success" : "text-warning")">
+                                @payment.PaymentStatus
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">Not Processed</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Order Items</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Size</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-right">Quantity</th>
+                                <th class="text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.MenuItem.DishName
+                                        @if (item.MenuItem.StarRating == 5)
+                                        {
+                                            <span class="badge badge-warning">⭐ Chef's Choice</span>
+                                        }
+                                    </td>
+                                    <td>@item.MenuItem.Size</td>
+                                    <td class="text-right">$@item.MenuItem.Price.ToString("F2")</td>
+                                    <td class="text-right">@item.Quantity</td>
+                                    <td class="text-right">$@((item.MenuItem.Price * item.Quantity).ToString("F2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Total:</strong></td>
+                                <td class="text-right"><strong>$@total.ToString("F2")</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        @if (!Model.Payments.Any(p => p.PaymentStatus == "Paid"))
+        {
+            <div class="mt-3">
+                @Html.ActionLink("Process Payment", "Create", "Payment", new { orderId = Model.OrderID }, new { @class = "btn btn-success" })
+            </div>
+        }
+    </div>
+</div>

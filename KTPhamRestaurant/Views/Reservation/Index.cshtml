@@ -1,0 +1,172 @@
+﻿@model IEnumerable<KTPhamRestaurant.Models.Reservation>
+
+@{
+    ViewBag.Title = "Reservations";
+    var today = DateTime.Today;
+}
+
+<style>
+    .nav-tabs .nav-link {
+        color: #333333 !important; /* Dark color for better visibility */
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        margin-right: 5px;
+        font-weight: 500;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: #FF5722 !important;
+            background-color: #fff;
+            border-bottom-color: transparent;
+            font-weight: bold;
+        }
+
+        .nav-tabs .nav-link:hover {
+            border-color: #e9ecef #e9ecef #dee2e6;
+            color: #FF5722 !important;
+            background-color: #fff;
+        }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Reservations</h2>
+    @Html.ActionLink("New Reservation", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<ul class="nav nav-tabs mb-4" id="reservationTabs" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" id="upcoming-tab" data-toggle="tab" href="#upcoming" role="tab">Upcoming</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" id="cancelled-tab" data-toggle="tab" href="#cancelled" role="tab">Cancelled</a>
+    </li>
+</ul>
+
+<div class="tab-content" id="reservationTabContent">
+    <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Customer</th>
+                        <th>Table</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(r => r.ReservationDateTime >= today && r.Status != "Cancelled"))
+                    {
+                        <tr>
+                            <td>@item.ReservationDateTime.ToString("MM/dd/yyyy HH:mm")</td>
+                            <td>
+                                @item.CustomerName<br />
+                                <small class="text-muted">@item.ContactNumber</small>
+                            </td>
+                            <td>@item.Table.TableNumber</td>
+                            <td>@item.NumberOfGuests</td>
+                            <td>
+                                <span class="badge badge-@(item.Status == "Confirmed" ? "success" : "info")">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.ReservationID }, new { @class = "btn btn-sm btn-primary" })
+                                    @using (Html.BeginForm("Cancel", "Reservation", new { id = item.ReservationID }, FormMethod.Post, new { style = "display:inline;" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to cancel this reservation?')">
+                                            Cancel
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="past" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Customer</th>
+                        <th>Table</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(r => r.ReservationDateTime < today && r.Status != "Cancelled"))
+                    {
+                        <tr>
+                            <td>@item.ReservationDateTime.ToString("MM/dd/yyyy HH:mm")</td>
+                            <td>
+                                @item.CustomerName<br />
+                                <small class="text-muted">@item.ContactNumber</small>
+                            </td>
+                            <td>@item.Table.TableNumber</td>
+                            <td>@item.NumberOfGuests</td>
+                            <td>
+                                <span class="badge badge-secondary">@item.Status</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="cancelled" role="tabpanel">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Customer</th>
+                        <th>Table</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Where(r => r.Status == "Cancelled"))
+                    {
+                        <tr>
+                            <td>@item.ReservationDateTime.ToString("MM/dd/yyyy HH:mm")</td>
+                            <td>
+                                @item.CustomerName<br />
+                                <small class="text-muted">@item.ContactNumber</small>
+                            </td>
+                            <td>@item.Table.TableNumber</td>
+                            <td>@item.NumberOfGuests</td>
+                            <td>
+                                <span class="badge badge-danger">@item.Status</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Activate Bootstrap tabs
+            $('#reservationTabs a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+        });
+    </script>
+}

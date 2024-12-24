@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - KTPham Restaurant</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #FF5722 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Navbar item styling */
+        .navbar-nav .nav-item {
+            position: relative;
+            margin-right: 5px;
+        }
+
+            /* Active tab styling */
+            .navbar-nav .nav-item .nav-link {
+                color: white !important;
+                padding: 8px 15px;
+                border-radius: 4px;
+                transition: all 0.3s ease;
+            }
+
+                /* Hover effect */
+                .navbar-nav .nav-item .nav-link:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    transform: translateY(-2px);
+                }
+
+                /* Active tab indicator */
+                .navbar-nav .nav-item .nav-link.active {
+                    background-color: rgba(255, 255, 255, 0.15);
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                }
+
+                .navbar-nav .nav-item .nav-link::after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 2px;
+                    bottom: 0;
+                    left: 50%;
+                    background-color: white;
+                    transition: all 0.3s ease;
+                    transform: translateX(-50%);
+                }
+
+                .navbar-nav .nav-item .nav-link:hover::after {
+                    width: 80%;
+                }
+
+                .navbar-nav .nav-item .nav-link.active::after {
+                    width: 80%;
+                }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .navbar-light .navbar-nav .nav-link:hover {
+            color: #FFE0B2 !important;
+        }
+
+        .navbar-toggler {
+            border-color: white;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        .btn-primary {
+            background-color: #FF5722;
+            border-color: #FF5722;
+        }
+
+            .btn-primary:hover {
+                background-color: #F4511E;
+                border-color: #F4511E;
+            }
+
+        .btn-info {
+            background-color: #42A5F5;
+            border-color: #42A5F5;
+        }
+
+            .btn-info:hover {
+                background-color: #1E88E5;
+                border-color: #1E88E5;
+            }
+
+        .btn-success {
+            background-color: #66BB6A;
+            border-color: #66BB6A;
+        }
+
+            .btn-success:hover {
+                background-color: #4CAF50;
+                border-color: #4CAF50;
+            }
+
+        .card {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        footer {
+            background-color: #FF5722;
+            color: white;
+            padding: 20px 0;
+            margin-top: 50px;
+        }
+
+        .navbar-brand {
+            position: relative;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        .brand-short {
+            display: inline-block;
+            color: white;
+            font-weight: 500;
+        }
+
+        .brand-full {
+            display: inline-block;
+            max-width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+        }
+
+        .navbar-brand:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+            .navbar-brand:hover .brand-full {
+                max-width: 200px;
+                opacity: 1;
+                transform: translateX(0);
+                margin-left: 0;
+            }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="@Url.Action("Index", "Home")">
+                <span class="brand-short">KTP</span>
+                <span class="brand-full">ham Restaurant</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        @Html.ActionLink(" Menu", "Index", "Menu", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Menu" ? "active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(" Orders", "Index", "Order", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Order" ? "active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(" Tables", "Index", "Table", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Table" ? "active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(" Reservations", "Index", "Reservation", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Reservation" ? "active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(" Kitchen", "Index", "Kitchen", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Kitchen" ? "active" : "") })
+                    </li>
+                    <li class="nav-item">
+                        @Html.ActionLink(" Payments", "Index", "Payment", null,
+                                 new { @class = "nav-link " + (ViewContext.RouteData.Values["Controller"].ToString() == "Payment" ? "active" : "") })
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer class="text-center">
+            <p>&copy; @DateTime.Now.Year - KTPham Restaurant Management System</p>
+        </footer>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

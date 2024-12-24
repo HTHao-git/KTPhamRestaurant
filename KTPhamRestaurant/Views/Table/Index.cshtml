@@ -1,0 +1,169 @@
+﻿@model IEnumerable<KTPhamRestaurant.Models.Table>
+
+@{
+    ViewBag.Title = "Tables";
+}
+
+<h2>Table Management</h2>
+
+@Html.AntiForgeryToken()
+
+<div class="row mt-4">
+    @foreach (var item in Model)
+    {
+        string statusClass;
+        switch (item.Status.ToLower())
+        {
+            case "available":
+                statusClass = "bg-success";
+                break;
+            case "occupied":
+                statusClass = "bg-danger";
+                break;
+            case "reserved":
+                statusClass = "bg-warning";
+                break;
+            default:
+                statusClass = "bg-secondary";
+                break;
+        }
+
+        <div class="col-md-3 mb-4">
+            <div class="card" id="card-@item.TableID">
+                <div class="card-header @statusClass text-white">
+                    <h5 class="mb-0">Table @item.TableNumber</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-2">
+                        <strong>Status:</strong> <span id="status-@item.TableID">@item.Status</span>
+                    </p>
+
+                    @if (item.Orders.Any(o => !o.Payments.Any() || o.Payments.All(p => p.PaymentStatus != "Paid")))
+                    {
+                        <p class="mb-2">
+                            <span class="text-danger">Has active order</span>
+                        </p>
+                    }
+
+                    @if (item.Reservations.Any(r => r.Status == "Confirmed" &&
+                        r.ReservationDateTime.Date == DateTime.Today))
+                    {
+                        <p class="mb-2">
+                            <span class="text-warning">Has reservation today</span>
+                        </p>
+                    }
+
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Update Status
+                    </button>
+                    <div class="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
+                        <button class="dropdown-item" type="button" data-tableid="@item.TableID" data-status="Available">
+                            Available
+                        </button>
+                        <button class="dropdown-item" type="button" data-tableid="@item.TableID" data-status="Occupied">
+                            Occupied
+                        </button>
+                        <button class="dropdown-item" type="button" data-tableid="@item.TableID" data-status="Reserved">
+                            Reserved
+                        </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            console.log('Table management script initialized');
+
+            $(document).on('click', '.dropdown-item', function (e) {
+                e.preventDefault();
+                console.log('Dropdown item clicked');
+
+                var tableId = $(this).data('tableid');
+                var status = $(this).data('status');
+
+                console.log('TableID:', tableId);
+                console.log('New Status:', status);
+
+                if (!tableId || !status) {
+                    console.log('Missing data attributes');
+                    return;
+                }
+
+                var token = $('input[name="__RequestVerificationToken"]').val();
+                console.log('Token found:', !!token);
+
+                $.ajax({
+                    url: '@Url.Action("UpdateStatus", "Table")',
+                    type: 'POST',
+                    data: {
+                        id: tableId,
+                        status: status,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        console.log('Response:', response);
+                        if (response.success) {
+                            var statusSpan = $('#status-' + tableId);
+                            var header = statusSpan.closest('.card').find('.card-header');
+
+                            // Update status text
+                            statusSpan.text(status);
+
+                            // Update header color
+                            header.removeClass('bg-success bg-danger bg-warning bg-secondary');
+
+                            switch(status.toLowerCase()) {
+                                case 'available':
+                                    header.addClass('bg-success');
+                                    break;
+                                case 'occupied':
+                                    header.addClass('bg-danger');
+                                    break;
+                                case 'reserved':
+                                    header.addClass('bg-warning');
+                                    break;
+                                default:
+                                    header.addClass('bg-secondary');
+                            }
+
+                            alert('Status updated successfully!');
+                        } else {
+                            alert(response.message || 'Failed to update status');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error:', xhr.responseText);
+                        alert('Error updating status: ' + error);
+                    }
+                });
+            });
+
+            function showNotification(title, message, type) {
+                const toast = $('.toast');
+                $('#toast-title').text(title);
+                $('#toast-message').text(message);
+
+                toast.removeClass('bg-success bg-danger');
+
+                if (type === 'success') {
+                    toast.addClass('bg-success text-white');
+                } else if (type === 'danger') {
+                    toast.addClass('bg-danger text-white');
+                }
+
+                var bsToast = new bootstrap.Toast(toast[0]);
+                bsToast.show();
+            }
+
+            $('.dropdown-item').click(function() {
+                console.log('Direct click test');
+            });
+        });
+    </script>
+}

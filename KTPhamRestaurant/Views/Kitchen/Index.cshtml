@@ -1,0 +1,104 @@
+﻿@model IEnumerable<KTPhamRestaurant.Models.Order>
+@{
+    ViewBag.Title = "Kitchen Orders";
+}
+<h2>Kitchen Orders</h2>
+<div class="mb-3">
+    @Html.ActionLink("Kitchen Dashboard", "Dashboard", null, new { @class = "btn btn-info" })
+</div>
+<div class="row">
+    @foreach (var order in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        Order #@order.OrderID
+                        <span class="float-right">Table @order.Table.TableNumber</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Server:</strong> @order.Employee.EmployeeName</p>
+                    <p><strong>Time:</strong> @(order.OrderDate.HasValue ? order.OrderDate.Value.ToString("MM/dd/yyyy HH:mm") : "N/A")</p>
+                    <p><strong>Payment Status:</strong> @(order.Payments.Any() ? order.Payments.FirstOrDefault().PaymentStatus : "Pending")</p>
+                    <h6>Items:</h6>
+                    <ul class="list-unstyled">
+                        @foreach (var detail in order.OrderDetails.Where(d => d.Quantity > 0))
+                        {
+                        <li>@detail.Quantity x @detail.MenuItem.DishName</li>
+                        }
+                    </ul>
+                    <div class="btn-group w-100">
+                        <button class="btn btn-warning status-btn" data-order-id="@order.OrderID" data-status="In Progress"
+                                onclick="updateOrderStatus(this, '@order.OrderID', 'In Progress')">
+                            Start Preparing
+                        </button>
+                        <button class="btn btn-success status-btn" data-order-id="@order.OrderID" data-status="Completed"
+                                onclick="updateOrderStatus(this, '@order.OrderID', 'Completed')">
+                            Complete
+                        </button>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    Status: <span id="status-@order.OrderID">@(order.Status ?? "Pending")</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        function updateOrderStatus(button, orderId, status) {
+            $.ajax({
+                url: '@Url.Action("UpdateOrderStatus")',
+                type: 'POST',
+                data: {
+                    orderId: orderId,
+                    status: status,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (result) {
+                    if (result.success) {
+                        // Update the status text
+                        $('#status-' + orderId).text(status);
+
+                        // Update button states based on status
+                        var card = $(button).closest('.card');
+                        if (status === 'Completed') {
+                            // Disable both buttons when completed
+                            card.find('.status-btn').prop('disabled', true);
+
+                            card.addClass('border-success');
+                        } else if (status === 'In Progress') {
+
+                            card.find('[data-status="In Progress"]').prop('disabled', true);
+
+                            card.find('[data-status="Completed"]').prop('disabled', false);
+                        }
+                    }
+                }
+            });
+        }
+
+        function showNotification(title, message, type) {
+            const toast = $('.toast');
+            $('#toast-title').text(title);
+            $('#toast-message').text(message);
+
+
+            toast.removeClass('bg-success bg-danger');
+
+            if (type === 'success') {
+                toast.addClass('bg-success text-white');
+            } else if (type === 'danger') {
+                toast.addClass('bg-danger text-white');
+            }
+
+            var bsToast = new bootstrap.Toast(toast[0]);
+            bsToast.show();
+        } 
+    </script>
+}

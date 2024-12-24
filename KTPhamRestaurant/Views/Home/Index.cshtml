@@ -1,0 +1,156 @@
+﻿@{
+    ViewBag.Title = "KTPham Restaurant";
+}
+
+<style>
+    .restaurant-banner {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/Content/Images/restaurant-bg.jpg');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 100px 0;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .feature-card {
+        transition: transform 0.3s;
+        margin-bottom: 20px;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-orange {
+        background-color: #FF7043;
+        color: white;
+    }
+
+    .card-red {
+        background-color: #EF5350;
+        color: white;
+    }
+
+    .card-blue {
+        background-color: #42A5F5;
+        color: white;
+    }
+
+    .btn-custom {
+        background-color: transparent;
+        border: 2px solid white;
+        color: white;
+        transition: all 0.3s;
+    }
+
+        .btn-custom:hover {
+            background-color: white;
+            color: #333;
+        }
+
+    .section-title {
+        color: #FF5722;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .hero-section {
+        position: relative;
+        height: 60vh;
+        overflow: hidden;
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/Content/Images/kitchen.jpg');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: -20px; 
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+    .hero-content {
+        text-align: center;
+        color: white;
+        padding: 20px;
+        z-index: 1;
+    }
+</style>
+
+<div class="restaurant-banner">
+    <div class="container">
+        <h1 class="display-4">Welcome to KTPham Restaurant</h1>
+        <p class="lead">Good food, Good mood</p>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="section-title">Restaurant Management System</h2>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card feature-card card-orange">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Menu Management</h3>
+                    <p class="card-text">Manage your restaurant's menu items, prices, and categories.</p>
+                    @Html.ActionLink("Manage Menu", "Index", "Menu", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card card-red">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Order Processing</h3>
+                    <p class="card-text">Take orders, manage tables, and process customer requests.</p>
+                    @Html.ActionLink("View Orders", "Index", "Order", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card card-blue">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Reservations</h3>
+                    <p class="card-text">Manage customer reservations and table assignments.</p>
+                    @Html.ActionLink("Manage Reservations", "Index", "Reservation", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card feature-card card-blue">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Kitchen Operations</h3>
+                    <p class="card-text">Monitor and manage kitchen orders and preparation.</p>
+                    @Html.ActionLink("Kitchen Dashboard", "Index", "Kitchen", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card card-orange">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Table Management</h3>
+                    <p class="card-text">Monitor table status and manage seating arrangements.</p>
+                    @Html.ActionLink("Manage Tables", "Index", "Table", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card card-red">
+                <div class="card-body text-center">
+                    <h3 class="card-title">Payments</h3>
+                    <p class="card-text">Process payments and manage transactions.</p>
+                    @Html.ActionLink("Payment History", "Index", "Payment", null, new { @class = "btn btn-custom" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

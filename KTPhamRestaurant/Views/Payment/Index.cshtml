@@ -1,0 +1,48 @@
+﻿@model IEnumerable<KTPhamRestaurant.Models.Payment>
+
+@{
+    ViewBag.Title = "Payment History";
+}
+
+<h2>Payment History</h2>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Order ID</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.PaymentID</td>
+                    <td>@item.OrderID</td>
+                    <td>
+                        <span class="@(item.PaymentStatus == "Paid" ? "text-success" : "text-warning")">
+                            @item.PaymentStatus
+                        </span>
+                    </td>
+                    <td>
+                        @if (item.PaymentDate.HasValue)
+                        {
+                            @item.PaymentDate.Value.ToString("MM/dd/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "Details", new { id = item.PaymentID }, new { @class = "btn btn-sm btn-info" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

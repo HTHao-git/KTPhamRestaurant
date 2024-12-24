@@ -1,0 +1,112 @@
+﻿@model KTPhamRestaurant.Models.Order
+
+@{
+    ViewBag.Title = "Process Payment";
+    decimal total = ViewBag.Total;
+}
+
+<h2>Process Payment</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Order Details - @Model.OrderID</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Date:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.OrderDate.HasValue)
+                        {
+                            @Model.OrderDate.Value.ToString("MM/dd/yyyy HH:mm")
+                        }
+                        else
+                        {
+                            <span class="text-muted">N/A</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Table:</dt>
+                    <dd class="col-sm-8">
+                        @(Model.Table != null ? Model.Table.TableNumber : "N/A")
+                    </dd>
+
+                    <dt class="col-sm-4">Server:</dt>
+                    <dd class="col-sm-8">
+                        @(Model.Employee != null ? Model.Employee.EmployeeName : "N/A")
+                    </dd>
+                </dl>
+
+                <h5 class="mt-4">Order Items</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>@(item.MenuItem != null ? item.MenuItem.DishName : "N/A")</td>
+                                    <td>$@(item.MenuItem != null ? item.MenuItem.Price.ToString("F2") : "0.00")</td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-right">$@((item.MenuItem != null ? item.MenuItem.Price * item.Quantity : 0).ToString("F2"))</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                <td class="text-right"><strong>$@total.ToString("F2")</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Payment Information</h4>
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("ProcessPayment", "Payment", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("orderId", Model.OrderID)
+
+                    <div class="form-group">
+                        <label>Payment Method</label>
+                        <select name="paymentMethod" class="form-control">
+                            <option value="Cash">Cash</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Debit Card">Debit Card</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amount to Pay</label>
+                        <input type="text" class="form-control" value="$@total.ToString("F2")" disabled />
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">Process Payment</button>
+                        @Html.ActionLink("Cancel", "Details", "Order", new { id = Model.OrderID }, new { @class = "btn btn-default" })
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
