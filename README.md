@@ -2,18 +2,18 @@
 
 A full-stack ASP.NET MVC web application for restaurant management, demonstrating frontend-backend integration through JavaScript event handling and C# controllers.
 
-## 📋 Overview
+## Overview
 
 KTPham Restaurant is a comprehensive restaurant management system built to simulate real-world interactions between frontend JavaScript event handling and backend C# controllers. The application manages core restaurant operations including menu items, orders, table reservations, kitchen workflow, and payment processing.
 
-## ✨ Features
+## Features
 
-### 🍽️ Menu Management
+### Menu Management
 - **CRUD Operations**: Create, read, update menu items with details (name, size, price, dish type)
 - **Menu Categorization**: Organize dishes by type (Appetizers, Main Courses, Desserts, etc.)
 - **Dynamic Menu Display**: View and filter menu items dynamically
 
-### 📝 Order Management
+### Order Management
 - **Create Orders**: Place orders by selecting menu items and quantities
 - **Order Details**: View comprehensive order information including items, quantities, and prices
 - **Order Editing**: Modify pending orders before payment
@@ -21,31 +21,31 @@ KTPham Restaurant is a comprehensive restaurant management system built to simul
 - **Automatic OrderID Generation**: Sequential order ID generation (ORDR0001, ORDR0002, etc.)
 - **Table Status Integration**: Automatic table status updates when orders are placed or cancelled
 
-### 🪑 Table Management
+### Table Management
 - **Table Status Monitoring**: Track table availability (Available, Occupied, Reserved)
 - **Status Updates**: Change table status with validation
 - **Active Order Validation**: Prevent table status changes when active orders exist
 - **Reservation Integration**: Link tables with reservation system
 
-### 👨‍🍳 Kitchen Dashboard
+### Kitchen Dashboard
 - **Active Orders View**: Display all pending and in-progress orders
 - **Order Status Updates**: Update order status via AJAX calls
 - **Order Statistics**: View counts of pending, in-progress, and completed orders
 - **Popular Items Analytics**: Track the top 5 most ordered menu items
 - **Real-time Updates**: Kitchen staff can update order status without page reload
 
-### 📅 Reservation System
+### Reservation System
 - **Create Reservations**: Book tables for customers with date/time selection
 - **Customer Information**: Store customer name, contact, guest count, and special requests
 - **Reservation Status Management**: Track reservations (Confirmed, Cancelled, Completed)
 - **Table Assignment**: Link reservations to specific tables
 
-### 💳 Payment Tracking
+### Payment Tracking
 - **Payment Records**: Track payment status for orders
 - **Payment Status**:  Monitor payment states (Pending, Paid)
 - **Order-Payment Linking**: Associate payments with specific orders
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Backend
 - **ASP.NET MVC 5**:  Model-View-Controller architecture
@@ -68,7 +68,7 @@ KTPham Restaurant is a comprehensive restaurant management system built to simul
 - Entity Framework 6.2. 0
 - Modernizr
 
-## 📊 Database Schema
+## Database Schema
 
 ### Core Models
 
@@ -107,7 +107,7 @@ KTPham Restaurant is a comprehensive restaurant management system built to simul
 - ReservationDateTime, NumberOfGuests
 - SpecialRequests, Status
 
-## 🎯 Key Frontend-Backend Interactions
+## Key Frontend-Backend Interactions
 
 This project demonstrates practical JavaScript event handling working with C# backend controllers:
 
@@ -131,7 +131,7 @@ This project demonstrates practical JavaScript event handling working with C# ba
 - **Order Creation**: Creates order, order details, AND changes table status to occupied
 - **Transaction Management**: Entity Framework database transactions ensure data consistency
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Visual Studio 2019 or later
